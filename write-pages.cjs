@@ -278,9 +278,17 @@ export default function Transactions() {
   useEffect(() => {
     let result = transactions;
     if (typeFilter !== 'all') result = result.filter(t => t.type === typeFilter);
-    if (categoryFilter) result = result.filter(t => t.category.toLowerCase().includes(categoryFilter.toLowerCase()));
+    if (categoryFilter) result = result.filter(t => t.category.toLowerCase() === categoryFilter.toLowerCase());
     setFiltered(result);
-  }, [typeFilter, categoryFilter, transactions]);
+    setCategoryFilter('');
+  }, [typeFilter, transactions]);
+
+  useEffect(() => {
+    let result = transactions;
+    if (typeFilter !== 'all') result = result.filter(t => t.type === typeFilter);
+    if (categoryFilter) result = result.filter(t => t.category.toLowerCase() === categoryFilter.toLowerCase());
+    setFiltered(result);
+  }, [categoryFilter]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -299,7 +307,11 @@ export default function Transactions() {
     fetchTransactions();
   };
 
-  const categories = [...new Set(transactions.map(t => t.category))];
+  const visibleCategories = [...new Set(
+    transactions
+      .filter(t => typeFilter === 'all' || t.type === typeFilter)
+      .map(t => t.category)
+  )];
 
   const totalIncome = filtered.filter(t => t.type === 'income').reduce((sum, t) => sum + t.amount, 0);
   const totalExpenses = filtered.filter(t => t.type === 'expense').reduce((sum, t) => sum + t.amount, 0);
@@ -337,6 +349,7 @@ export default function Transactions() {
 
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
         <h2 className="text-lg font-semibold text-gray-700 mb-4">Filter Transactions</h2>
+
         <div className="flex flex-wrap gap-3 mb-4">
           {['all', 'income', 'expense'].map(type => (
             <button key={type} onClick={() => setTypeFilter(type)}
@@ -346,25 +359,28 @@ export default function Transactions() {
                   : type === 'expense' ? 'bg-red-500 text-white'
                   : 'bg-blue-600 text-white'
                   : 'bg-gray-100 text-gray-600 hover:bg-gray-200')}>
-              {type === 'all' ? 'All' : type}
+              {type === 'all' ? 'All' : type.charAt(0).toUpperCase() + type.slice(1)}
             </button>
           ))}
         </div>
-        <div className="flex flex-wrap gap-2">
-          <span className="text-sm text-gray-500 self-center">Category:</span>
-          <button onClick={() => setCategoryFilter('')}
-            className={"px-3 py-1 rounded-lg text-sm transition " +
-              (categoryFilter === '' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200')}>
-            All
-          </button>
-          {categories.map(cat => (
-            <button key={cat} onClick={() => setCategoryFilter(cat)}
-              className={"px-3 py-1 rounded-lg text-sm capitalize transition " +
-                (categoryFilter === cat ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200')}>
-              {cat}
+
+        {visibleCategories.length > 0 && (
+          <div className="flex flex-wrap gap-2 pt-3 border-t border-gray-100">
+            <span className="text-sm text-gray-500 self-center mr-1">Category:</span>
+            <button onClick={() => setCategoryFilter('')}
+              className={"px-3 py-1 rounded-lg text-sm transition " +
+                (categoryFilter === '' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200')}>
+              All
             </button>
-          ))}
-        </div>
+            {visibleCategories.map(cat => (
+              <button key={cat} onClick={() => setCategoryFilter(cat)}
+                className={"px-3 py-1 rounded-lg text-sm capitalize transition " +
+                  (categoryFilter === cat ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200')}>
+                {cat}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
       <div className="grid grid-cols-2 gap-4 mb-6">
