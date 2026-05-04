@@ -3,18 +3,31 @@ import api from '../services/api';
 
 export default function Transactions() {
   const [transactions, setTransactions] = useState([]);
+  const [filtered, setFiltered] = useState([]);
   const [loading, setLoading] = useState(true);
   const [form, setForm] = useState({ amount: '', type: 'income', category: '', note: '' });
   const [error, setError] = useState('');
+  const [typeFilter, setTypeFilter] = useState('all');
+  const [categoryFilter, setCategoryFilter] = useState('');
 
   const fetchTransactions = () => {
     api.get('/transactions')
-      .then(res => setTransactions(res.data))
+      .then(res => {
+        setTransactions(res.data);
+        setFiltered(res.data);
+      })
       .catch(err => console.error(err))
       .finally(() => setLoading(false));
   };
 
   useEffect(() => { fetchTransactions(); }, []);
+
+  useEffect(() => {
+    let result = transactions;
+    if (typeFilter !== 'all') result = result.filter(t => t.type === typeFilter);
+    if (categoryFilter) result = result.filter(t => t.category.toLowerCase().includes(categoryFilter.toLowerCase()));
+    setFiltered(result);
+  }, [typeFilter, categoryFilter, transactions]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -33,11 +46,16 @@ export default function Transactions() {
     fetchTransactions();
   };
 
+  const categories = [...new Set(transactions.map(t => t.category))];
+
+  const totalIncome = filtered.filter(t => t.type === 'income').reduce((sum, t) => sum + t.amount, 0);
+  const totalExpenses = filtered.filter(t => t.type === 'expense').reduce((sum, t) => sum + t.amount, 0);
+
   return (
     <div className="p-8 max-w-4xl mx-auto">
       <h1 className="text-2xl font-bold text-gray-800 mb-6">Transactions</h1>
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-8">
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
         <h2 className="text-lg font-semibold text-gray-700 mb-4">Add Transaction</h2>
         {error && <p className="bg-red-50 text-red-600 p-3 rounded-lg mb-4 text-sm">{error}</p>}
         <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-4">
@@ -64,22 +82,69 @@ export default function Transactions() {
         </form>
       </div>
 
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+        <h2 className="text-lg font-semibold text-gray-700 mb-4">Filter Transactions</h2>
+        <div className="flex flex-wrap gap-3 mb-4">
+          {['all', 'income', 'expense'].map(type => (
+            <button key={type} onClick={() => setTypeFilter(type)}
+              className={"px-4 py-2 rounded-lg font-medium capitalize transition " +
+                (typeFilter === type
+                  ? type === 'income' ? 'bg-green-500 text-white'
+                  : type === 'expense' ? 'bg-red-500 text-white'
+                  : 'bg-blue-600 text-white'
+                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200')}>
+              {type === 'all' ? 'All' : type}
+            </button>
+          ))}
+        </div>
+        <div className="flex flex-wrap gap-2">
+          <span className="text-sm text-gray-500 self-center">Category:</span>
+          <button onClick={() => setCategoryFilter('')}
+            className={"px-3 py-1 rounded-lg text-sm transition " +
+              (categoryFilter === '' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200')}>
+            All
+          </button>
+          {categories.map(cat => (
+            <button key={cat} onClick={() => setCategoryFilter(cat)}
+              className={"px-3 py-1 rounded-lg text-sm capitalize transition " +
+                (categoryFilter === cat ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200')}>
+              {cat}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-4 mb-6">
+        <div className="bg-green-50 border border-green-200 rounded-xl p-4">
+          <p className="text-sm text-green-600 font-medium">Filtered Income</p>
+          <p className="text-xl font-bold text-green-700">UGX {totalIncome.toLocaleString()}</p>
+        </div>
+        <div className="bg-red-50 border border-red-200 rounded-xl p-4">
+          <p className="text-sm text-red-600 font-medium">Filtered Expenses</p>
+          <p className="text-xl font-bold text-red-700">UGX {totalExpenses.toLocaleString()}</p>
+        </div>
+      </div>
+
       {loading ? <p className="text-gray-500">Loading...</p> : (
         <div className="space-y-3">
-          {transactions.map(t => (
-            <div key={t.id} className="bg-white rounded-xl border border-gray-200 p-4 flex justify-between items-center">
-              <div>
-                <p className="font-medium text-gray-800 capitalize">{t.category}</p>
-                <p className="text-sm text-gray-500">{t.note} • {new Date(t.date).toLocaleDateString()}</p>
+          {filtered.length === 0 ? (
+            <p className="text-center text-gray-400 py-8">No transactions match your filter</p>
+          ) : (
+            filtered.map(t => (
+              <div key={t.id} className="bg-white rounded-xl border border-gray-200 p-4 flex justify-between items-center">
+                <div>
+                  <p className="font-medium text-gray-800 capitalize">{t.category}</p>
+                  <p className="text-sm text-gray-500">{t.note} • {new Date(t.date).toLocaleDateString()}</p>
+                </div>
+                <div className="flex items-center gap-4">
+                  <span className={t.type === 'income' ? 'text-green-600 font-bold' : 'text-red-600 font-bold'}>
+                    {t.type === 'income' ? '+' : '-'} UGX {t.amount.toLocaleString()}
+                  </span>
+                  <button onClick={() => handleDelete(t.id)} className="text-sm text-red-400 hover:text-red-600">Delete</button>
+                </div>
               </div>
-              <div className="flex items-center gap-4">
-                <span className={t.type === 'income' ? 'text-green-600 font-bold' : 'text-red-600 font-bold'}>
-                  {t.type === 'income' ? '+' : '-'} UGX {t.amount.toLocaleString()}
-                </span>
-                <button onClick={() => handleDelete(t.id)} className="text-sm text-red-400 hover:text-red-600">Delete</button>
-              </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
       )}
     </div>
