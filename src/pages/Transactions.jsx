@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import api from '../services/api';
+import invoicesImg from '../assets/invoices.svg';
 
 export default function Transactions() {
   const [transactions, setTransactions] = useState([]);
@@ -12,10 +13,7 @@ export default function Transactions() {
 
   const fetchTransactions = () => {
     api.get('/transactions')
-      .then(res => {
-        setTransactions(res.data);
-        setFiltered(res.data);
-      })
+      .then(res => { setTransactions(res.data); setFiltered(res.data); })
       .catch(err => console.error(err))
       .finally(() => setLoading(false));
   };
@@ -54,18 +52,19 @@ export default function Transactions() {
     fetchTransactions();
   };
 
-  const visibleCategories = [...new Set(
-    transactions
-      .filter(t => typeFilter === 'all' || t.type === typeFilter)
-      .map(t => t.category)
-  )];
-
+  const visibleCategories = [...new Set(transactions.filter(t => typeFilter === 'all' || t.type === typeFilter).map(t => t.category))];
   const totalIncome = filtered.filter(t => t.type === 'income').reduce((sum, t) => sum + t.amount, 0);
   const totalExpenses = filtered.filter(t => t.type === 'expense').reduce((sum, t) => sum + t.amount, 0);
 
   return (
     <div className="p-8 max-w-4xl mx-auto">
-      <h1 className="text-2xl font-bold text-gray-800 mb-6">Transactions</h1>
+      <div className="bg-blue-600 rounded-2xl p-6 mb-8 flex justify-between items-center">
+        <div>
+          <h1 className="text-2xl font-bold text-white">Transactions</h1>
+          <p className="text-blue-100 mt-1">Manage your income and expenses</p>
+        </div>
+        <img src={invoicesImg} alt="Invoices" className="w-24 hidden md:block" />
+      </div>
 
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
         <h2 className="text-lg font-semibold text-gray-700 mb-4">Add Transaction</h2>
@@ -73,8 +72,7 @@ export default function Transactions() {
         <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-4">
           <input type="number" placeholder="Amount (UGX)" value={form.amount}
             onChange={e => setForm({...form, amount: e.target.value})}
-            className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required />
+            className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" required />
           <select value={form.type} onChange={e => setForm({...form, type: e.target.value})}
             className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
             <option value="income">Income</option>
@@ -82,13 +80,11 @@ export default function Transactions() {
           </select>
           <input type="text" placeholder="Category" value={form.category}
             onChange={e => setForm({...form, category: e.target.value})}
-            className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required />
+            className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" required />
           <input type="text" placeholder="Note (optional)" value={form.note}
             onChange={e => setForm({...form, note: e.target.value})}
             className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-          <button type="submit"
-            className="col-span-2 bg-blue-600 text-white py-2 rounded-lg font-medium hover:bg-blue-700 transition">
+          <button type="submit" className="col-span-2 bg-blue-600 text-white py-2 rounded-lg font-medium hover:bg-blue-700 transition">
             Add Transaction
           </button>
         </form>
@@ -96,33 +92,21 @@ export default function Transactions() {
 
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
         <h2 className="text-lg font-semibold text-gray-700 mb-4">Filter Transactions</h2>
-
         <div className="flex flex-wrap gap-3 mb-4">
           {['all', 'income', 'expense'].map(type => (
             <button key={type} onClick={() => setTypeFilter(type)}
-              className={"px-4 py-2 rounded-lg font-medium capitalize transition " +
-                (typeFilter === type
-                  ? type === 'income' ? 'bg-green-500 text-white'
-                  : type === 'expense' ? 'bg-red-500 text-white'
-                  : 'bg-blue-600 text-white'
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200')}>
+              className={"px-4 py-2 rounded-lg font-medium capitalize transition " + (typeFilter === type ? type === 'income' ? 'bg-green-500 text-white' : type === 'expense' ? 'bg-red-500 text-white' : 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200')}>
               {type === 'all' ? 'All' : type.charAt(0).toUpperCase() + type.slice(1)}
             </button>
           ))}
         </div>
-
         {visibleCategories.length > 0 && (
           <div className="flex flex-wrap gap-2 pt-3 border-t border-gray-100">
             <span className="text-sm text-gray-500 self-center mr-1">Category:</span>
-            <button onClick={() => setCategoryFilter('')}
-              className={"px-3 py-1 rounded-lg text-sm transition " +
-                (categoryFilter === '' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200')}>
-              All
-            </button>
+            <button onClick={() => setCategoryFilter('')} className={"px-3 py-1 rounded-lg text-sm transition " + (categoryFilter === '' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200')}>All</button>
             {visibleCategories.map(cat => (
               <button key={cat} onClick={() => setCategoryFilter(cat)}
-                className={"px-3 py-1 rounded-lg text-sm capitalize transition " +
-                  (categoryFilter === cat ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200')}>
+                className={"px-3 py-1 rounded-lg text-sm capitalize transition " + (categoryFilter === cat ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200')}>
                 {cat}
               </button>
             ))}
