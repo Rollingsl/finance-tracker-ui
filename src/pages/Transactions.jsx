@@ -13,10 +13,13 @@ export default function Transactions() {
   const [search, setSearch] = useState('');
   const [fromDate, setFromDate] = useState('');
   const [toDate, setToDate] = useState('');
+  const [editingId, setEditingId] = useState(null);
+  const [editForm, setEditForm] = useState({ amount: '', type: 'income', category: '', note: '' });
+  const [editError, setEditError] = useState('');
 
   const fetchTransactions = () => {
     api.get('/transactions')
-      .then(res => { setTransactions(res.data); })
+      .then(res => setTransactions(res.data))
       .catch(err => console.error(err))
       .finally(() => setLoading(false));
   };
@@ -36,9 +39,7 @@ export default function Transactions() {
     setFiltered(result);
   }, [typeFilter, categoryFilter, search, fromDate, toDate, transactions]);
 
-  useEffect(() => {
-    setCategoryFilter('');
-  }, [typeFilter]);
+  useEffect(() => { setCategoryFilter(''); }, [typeFilter]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -57,6 +58,24 @@ export default function Transactions() {
     fetchTransactions();
   };
 
+  const openEdit = (t) => {
+    setEditingId(t.id);
+    setEditForm({ amount: t.amount, type: t.type, category: t.category, note: t.note || '' });
+    setEditError('');
+  };
+
+  const handleEdit = async (e) => {
+    e.preventDefault();
+    setEditError('');
+    try {
+      await api.put('/transactions/' + editingId, editForm);
+      setEditingId(null);
+      fetchTransactions();
+    } catch (err) {
+      setEditError(err.response?.data?.error || 'Failed to update transaction');
+    }
+  };
+
   const clearFilters = () => {
     setTypeFilter('all');
     setCategoryFilter('');
@@ -72,6 +91,55 @@ export default function Transactions() {
 
   return (
     <div className="p-4 md:p-6 lg:p-8 max-w-4xl mx-auto">
+
+      {editingId && (
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 px-4">
+          <div className="bg-white rounded-2xl shadow-xl p-6 w-full max-w-md">
+            <h2 className="text-lg font-bold text-gray-800 mb-4">Edit Transaction</h2>
+            {editError && <p className="bg-red-50 text-red-600 p-3 rounded-lg mb-4 text-sm">{editError}</p>}
+            <form onSubmit={handleEdit} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Amount (UGX)</label>
+                <input type="number" value={editForm.amount}
+                  onChange={e => setEditForm({...editForm, amount: e.target.value})}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" required />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Type</label>
+                <select value={editForm.type} onChange={e => setEditForm({...editForm, type: e.target.value})}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                  <option value="income">Income</option>
+                  <option value="expense">Expense</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                <input type="text" value={editForm.category}
+                  onChange={e => setEditForm({...editForm, category: e.target.value})}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" required />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Note</label>
+                <input type="text" value={editForm.note}
+                  onChange={e => setEditForm({...editForm, note: e.target.value})}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Optional" />
+              </div>
+              <div className="flex gap-3 pt-2">
+                <button type="button" onClick={() => setEditingId(null)}
+                  className="flex-1 border border-gray-300 text-gray-700 py-2 rounded-lg font-medium hover:bg-gray-50 transition">
+                  Cancel
+                </button>
+                <button type="submit"
+                  className="flex-1 bg-blue-600 text-white py-2 rounded-lg font-medium hover:bg-blue-700 transition">
+                  Save Changes
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
       <div className="bg-blue-600 rounded-2xl p-4 md:p-6 mb-6 flex justify-between items-center">
         <div>
           <h1 className="text-lg md:text-2xl font-bold text-white">Transactions</h1>
@@ -108,18 +176,12 @@ export default function Transactions() {
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-base md:text-lg font-semibold text-gray-700">Search & Filter</h2>
           {hasActiveFilters && (
-            <button onClick={clearFilters} className="text-sm text-red-500 hover:text-red-700 font-medium">
-              Clear all
-            </button>
+            <button onClick={clearFilters} className="text-sm text-red-500 hover:text-red-700 font-medium">Clear all</button>
           )}
         </div>
-
-        <div className="mb-4">
-          <input type="text" placeholder="Search by category or note..." value={search}
-            onChange={e => setSearch(e.target.value)}
-            className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm" />
-        </div>
-
+        <input type="text" placeholder="Search by category or note..." value={search}
+          onChange={e => setSearch(e.target.value)}
+          className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm mb-4" />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
           <div>
             <label className="block text-xs text-gray-500 mb-1">From date</label>
@@ -132,7 +194,6 @@ export default function Transactions() {
               className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm" />
           </div>
         </div>
-
         <div className="flex flex-wrap gap-2 md:gap-3 mb-4">
           {['all', 'income', 'expense'].map(type => (
             <button key={type} onClick={() => setTypeFilter(type)}
@@ -141,7 +202,6 @@ export default function Transactions() {
             </button>
           ))}
         </div>
-
         {visibleCategories.length > 0 && (
           <div className="flex flex-wrap gap-2 pt-3 border-t border-gray-100">
             <span className="text-sm text-gray-500 self-center mr-1">Category:</span>
@@ -167,9 +227,7 @@ export default function Transactions() {
         </div>
       </div>
 
-      <div className="flex justify-between items-center mb-3">
-        <p className="text-sm text-gray-500">{filtered.length} transaction{filtered.length !== 1 ? 's' : ''} found</p>
-      </div>
+      <p className="text-sm text-gray-500 mb-3">{filtered.length} transaction{filtered.length !== 1 ? 's' : ''} found</p>
 
       {loading ? <p className="text-gray-500">Loading...</p> : (
         <div className="space-y-3">
@@ -185,10 +243,11 @@ export default function Transactions() {
                   <p className="font-medium text-gray-800 capitalize text-sm md:text-base">{t.category}</p>
                   <p className="text-xs md:text-sm text-gray-500">{t.note} • {new Date(t.date).toLocaleDateString()}</p>
                 </div>
-                <div className="flex items-center gap-2 md:gap-4">
+                <div className="flex items-center gap-2 md:gap-3">
                   <span className={"text-sm md:text-base font-bold " + (t.type === 'income' ? 'text-green-600' : 'text-red-600')}>
                     {t.type === 'income' ? '+' : '-'} UGX {t.amount.toLocaleString()}
                   </span>
+                  <button onClick={() => openEdit(t)} className="text-xs md:text-sm text-blue-500 hover:text-blue-700 font-medium">Edit</button>
                   <button onClick={() => handleDelete(t.id)} className="text-xs md:text-sm text-red-400 hover:text-red-600">Delete</button>
                 </div>
               </div>
