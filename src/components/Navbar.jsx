@@ -31,7 +31,7 @@ export default function Navbar() {
           </div>
 
           <div className="hidden md:flex items-center gap-1 lg:gap-2 bg-white bg-opacity-10 rounded-2xl px-2 py-1.5 backdrop-blur">
-            {[['/', 'Dashboard'], ['/transactions', 'Transactions'], ['/budgets', 'Budgets'], ['/profile', 'Profile']].map(([path, label]) => (
+            {[['/', 'Dashboard'], ['/transactions', 'Transactions'], ['/budgets', 'Budgets'], ['/insights', 'Insights'], ['/profile', 'Profile']].map(([path, label]) => (
               <Link key={path} to={path} style={{fontFamily: 'system-ui, sans-serif'}}
                 className={"px-4 py-1.5 rounded-xl text-sm font-medium transition-all duration-200 " +
                   (isActive(path)
@@ -76,7 +76,7 @@ export default function Navbar() {
                 <p className="text-xs text-white text-opacity-60">View profile</p>
               </div>
             </div>
-            {[['/', 'Dashboard'], ['/transactions', 'Transactions'], ['/budgets', 'Budgets'], ['/profile', 'Profile']].map(([path, label]) => (
+            {[['/', 'Dashboard'], ['/transactions', 'Transactions'], ['/budgets', 'Budgets'], ['/insights', 'Insights'], ['/profile', 'Profile']].map(([path, label]) => (
               <Link key={path} to={path} onClick={() => setMenuOpen(false)}
                 className={"flex items-center px-3 py-2.5 rounded-xl text-sm font-medium transition " +
                   (isActive(path) ? 'bg-white text-blue-700' : 'text-white text-opacity-90 hover:bg-white hover:bg-opacity-10')}>

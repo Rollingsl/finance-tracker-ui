@@ -6,6 +6,7 @@ import Transactions from './pages/Transactions';
 import Budgets from './pages/Budgets';
 import Profile from './pages/Profile';
 import Navbar from './components/Navbar';
+import Insights from './pages/Insights';
 
 const PrivateRoute = ({ children }) => {
   const token = localStorage.getItem('token');
@@ -22,6 +23,7 @@ function App() {
         <Route path="/transactions" element={<PrivateRoute><Navbar /><Transactions /></PrivateRoute>} />
         <Route path="/budgets" element={<PrivateRoute><Navbar /><Budgets /></PrivateRoute>} />
         <Route path="/profile" element={<PrivateRoute><Navbar /><Profile /></PrivateRoute>} />
+        <Route path="/insights" element={<PrivateRoute><Navbar /><Insights /></PrivateRoute>} />
       </Routes>
     </BrowserRouter>
   );
