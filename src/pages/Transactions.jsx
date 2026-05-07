@@ -84,6 +84,50 @@ export default function Transactions() {
     setToDate('');
   };
 
+  const exportCSV = () => {
+    const headers = ['Date', 'Type', 'Category', 'Note', 'Amount (UGX)'];
+    const rows = filtered.map(t => [
+      new Date(t.date).toLocaleDateString(),
+      t.type,
+      t.category,
+      t.note || '',
+      t.amount,
+    ]);
+    const csv = [headers, ...rows].map(r => r.join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'transactions.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const exportPDF = async () => {
+    const { default: jsPDF } = await import('jspdf');
+    const { default: autoTable } = await import('jspdf-autotable');
+    const doc = new jsPDF();
+    doc.setFontSize(18);
+    doc.text('Finance Tracker - Transactions', 14, 20);
+    doc.setFontSize(11);
+    doc.text('Generated on ' + new Date().toLocaleDateString(), 14, 28);
+    autoTable(doc, {
+      startY: 35,
+      head: [['Date', 'Type', 'Category', 'Note', 'Amount (UGX)']],
+      body: filtered.map(t => [
+        new Date(t.date).toLocaleDateString(),
+        t.type,
+        t.category,
+        t.note || '-',
+        t.amount.toLocaleString(),
+      ]),
+      styles: { fontSize: 10 },
+      headStyles: { fillColor: [37, 99, 235] },
+      alternateRowStyles: { fillColor: [240, 245, 255] },
+    });
+    doc.save('transactions.pdf');
+  };
+
   const visibleCategories = [...new Set(transactions.filter(t => typeFilter === 'all' || t.type === typeFilter).map(t => t.category))];
   const totalIncome = filtered.filter(t => t.type === 'income').reduce((sum, t) => sum + t.amount, 0);
   const totalExpenses = filtered.filter(t => t.type === 'expense').reduce((sum, t) => sum + t.amount, 0);
@@ -227,7 +271,19 @@ export default function Transactions() {
         </div>
       </div>
 
-      <p className="text-sm text-gray-500 mb-3">{filtered.length} transaction{filtered.length !== 1 ? 's' : ''} found</p>
+      <div className="flex justify-between items-center mb-3">
+        <p className="text-sm text-gray-500">{filtered.length} transaction{filtered.length !== 1 ? 's' : ''} found</p>
+        <div className="flex gap-2">
+          <button onClick={exportCSV}
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-green-500 hover:bg-green-600 text-white text-xs font-medium rounded-lg transition">
+            ⬇ CSV
+          </button>
+          <button onClick={exportPDF}
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-red-500 hover:bg-red-600 text-white text-xs font-medium rounded-lg transition">
+            ⬇ PDF
+          </button>
+        </div>
+      </div>
 
       {loading ? <p className="text-gray-500">Loading...</p> : (
         <div className="space-y-3">

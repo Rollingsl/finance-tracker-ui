@@ -348,6 +348,50 @@ export default function Transactions() {
     setToDate('');
   };
 
+  const exportCSV = () => {
+    const headers = ['Date', 'Type', 'Category', 'Note', 'Amount (UGX)'];
+    const rows = filtered.map(t => [
+      new Date(t.date).toLocaleDateString(),
+      t.type,
+      t.category,
+      t.note || '',
+      t.amount,
+    ]);
+    const csv = [headers, ...rows].map(r => r.join(',')).join('\\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'transactions.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const exportPDF = async () => {
+    const { default: jsPDF } = await import('jspdf');
+    const { default: autoTable } = await import('jspdf-autotable');
+    const doc = new jsPDF();
+    doc.setFontSize(18);
+    doc.text('Finance Tracker - Transactions', 14, 20);
+    doc.setFontSize(11);
+    doc.text('Generated on ' + new Date().toLocaleDateString(), 14, 28);
+    autoTable(doc, {
+      startY: 35,
+      head: [['Date', 'Type', 'Category', 'Note', 'Amount (UGX)']],
+      body: filtered.map(t => [
+        new Date(t.date).toLocaleDateString(),
+        t.type,
+        t.category,
+        t.note || '-',
+        t.amount.toLocaleString(),
+      ]),
+      styles: { fontSize: 10 },
+      headStyles: { fillColor: [37, 99, 235] },
+      alternateRowStyles: { fillColor: [240, 245, 255] },
+    });
+    doc.save('transactions.pdf');
+  };
+
   const visibleCategories = [...new Set(transactions.filter(t => typeFilter === 'all' || t.type === typeFilter).map(t => t.category))];
   const totalIncome = filtered.filter(t => t.type === 'income').reduce((sum, t) => sum + t.amount, 0);
   const totalExpenses = filtered.filter(t => t.type === 'expense').reduce((sum, t) => sum + t.amount, 0);
@@ -409,7 +453,17 @@ export default function Transactions() {
           <h1 className="text-lg md:text-2xl font-bold text-white">Transactions</h1>
           <p className="text-blue-100 mt-1 text-sm md:text-base">Manage your income and expenses</p>
         </div>
-        <img src={invoicesImg} alt="Invoices" className="w-16 md:w-24 hidden sm:block" />
+        <div className="flex items-center gap-2">
+          <button onClick={exportCSV}
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-green-500 hover:bg-green-600 text-white text-xs font-medium rounded-lg transition">
+            ⬇ CSV
+          </button>
+          <button onClick={exportPDF}
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-gray-100 text-red-500 text-xs font-medium rounded-lg transition">
+            ⬇ PDF
+          </button>
+          <img src={invoicesImg} alt="Invoices" className="w-16 md:w-24 hidden sm:block ml-2" />
+        </div>
       </div>
 
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 md:p-6 mb-6">
