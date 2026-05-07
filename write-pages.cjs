@@ -274,10 +274,13 @@ export default function Transactions() {
   const [error, setError] = useState('');
   const [typeFilter, setTypeFilter] = useState('all');
   const [categoryFilter, setCategoryFilter] = useState('');
+  const [search, setSearch] = useState('');
+  const [fromDate, setFromDate] = useState('');
+  const [toDate, setToDate] = useState('');
 
   const fetchTransactions = () => {
     api.get('/transactions')
-      .then(res => { setTransactions(res.data); setFiltered(res.data); })
+      .then(res => { setTransactions(res.data); })
       .catch(err => console.error(err))
       .finally(() => setLoading(false));
   };
@@ -288,16 +291,18 @@ export default function Transactions() {
     let result = transactions;
     if (typeFilter !== 'all') result = result.filter(t => t.type === typeFilter);
     if (categoryFilter) result = result.filter(t => t.category.toLowerCase() === categoryFilter.toLowerCase());
+    if (search) result = result.filter(t =>
+      t.category.toLowerCase().includes(search.toLowerCase()) ||
+      (t.note && t.note.toLowerCase().includes(search.toLowerCase()))
+    );
+    if (fromDate) result = result.filter(t => new Date(t.date) >= new Date(fromDate));
+    if (toDate) result = result.filter(t => new Date(t.date) <= new Date(toDate + 'T23:59:59'));
     setFiltered(result);
-    setCategoryFilter('');
-  }, [typeFilter, transactions]);
+  }, [typeFilter, categoryFilter, search, fromDate, toDate, transactions]);
 
   useEffect(() => {
-    let result = transactions;
-    if (typeFilter !== 'all') result = result.filter(t => t.type === typeFilter);
-    if (categoryFilter) result = result.filter(t => t.category.toLowerCase() === categoryFilter.toLowerCase());
-    setFiltered(result);
-  }, [categoryFilter]);
+    setCategoryFilter('');
+  }, [typeFilter]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -316,9 +321,18 @@ export default function Transactions() {
     fetchTransactions();
   };
 
+  const clearFilters = () => {
+    setTypeFilter('all');
+    setCategoryFilter('');
+    setSearch('');
+    setFromDate('');
+    setToDate('');
+  };
+
   const visibleCategories = [...new Set(transactions.filter(t => typeFilter === 'all' || t.type === typeFilter).map(t => t.category))];
   const totalIncome = filtered.filter(t => t.type === 'income').reduce((sum, t) => sum + t.amount, 0);
   const totalExpenses = filtered.filter(t => t.type === 'expense').reduce((sum, t) => sum + t.amount, 0);
+  const hasActiveFilters = typeFilter !== 'all' || categoryFilter || search || fromDate || toDate;
 
   return (
     <div className="p-4 md:p-6 lg:p-8 max-w-4xl mx-auto">
@@ -355,15 +369,43 @@ export default function Transactions() {
       </div>
 
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 md:p-6 mb-6">
-        <h2 className="text-base md:text-lg font-semibold text-gray-700 mb-4">Filter Transactions</h2>
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-base md:text-lg font-semibold text-gray-700">Search & Filter</h2>
+          {hasActiveFilters && (
+            <button onClick={clearFilters} className="text-sm text-red-500 hover:text-red-700 font-medium">
+              Clear all
+            </button>
+          )}
+        </div>
+
+        <div className="mb-4">
+          <input type="text" placeholder="Search by category or note..." value={search}
+            onChange={e => setSearch(e.target.value)}
+            className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm" />
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
+          <div>
+            <label className="block text-xs text-gray-500 mb-1">From date</label>
+            <input type="date" value={fromDate} onChange={e => setFromDate(e.target.value)}
+              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm" />
+          </div>
+          <div>
+            <label className="block text-xs text-gray-500 mb-1">To date</label>
+            <input type="date" value={toDate} onChange={e => setToDate(e.target.value)}
+              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm" />
+          </div>
+        </div>
+
         <div className="flex flex-wrap gap-2 md:gap-3 mb-4">
           {['all', 'income', 'expense'].map(type => (
             <button key={type} onClick={() => setTypeFilter(type)}
-              className={"px-3 md:px-4 py-1.5 md:py-2 rounded-lg font-medium capitalize transition text-sm md:text-base " + (typeFilter === type ? type === 'income' ? 'bg-green-500 text-white' : type === 'expense' ? 'bg-red-500 text-white' : 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200')}>
+              className={"px-3 md:px-4 py-1.5 md:py-2 rounded-lg font-medium capitalize transition text-sm " + (typeFilter === type ? type === 'income' ? 'bg-green-500 text-white' : type === 'expense' ? 'bg-red-500 text-white' : 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200')}>
               {type === 'all' ? 'All' : type.charAt(0).toUpperCase() + type.slice(1)}
             </button>
           ))}
         </div>
+
         {visibleCategories.length > 0 && (
           <div className="flex flex-wrap gap-2 pt-3 border-t border-gray-100">
             <span className="text-sm text-gray-500 self-center mr-1">Category:</span>
@@ -389,10 +431,17 @@ export default function Transactions() {
         </div>
       </div>
 
+      <div className="flex justify-between items-center mb-3">
+        <p className="text-sm text-gray-500">{filtered.length} transaction{filtered.length !== 1 ? 's' : ''} found</p>
+      </div>
+
       {loading ? <p className="text-gray-500">Loading...</p> : (
         <div className="space-y-3">
           {filtered.length === 0 ? (
-            <p className="text-center text-gray-400 py-8">No transactions match your filter</p>
+            <div className="text-center py-12">
+              <p className="text-gray-400 text-lg mb-2">No transactions found</p>
+              <p className="text-gray-300 text-sm">Try adjusting your search or filters</p>
+            </div>
           ) : (
             filtered.map(t => (
               <div key={t.id} className="bg-white rounded-xl border border-gray-200 p-3 md:p-4 flex justify-between items-center">
