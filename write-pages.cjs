@@ -611,6 +611,7 @@ export default function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
   const fullName = localStorage.getItem('fullName') || 'User';
+  const initials = fullName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
   const [showConfirm, setShowConfirm] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -621,66 +622,241 @@ export default function Navbar() {
     navigate('/login');
   };
 
-  const isActive = (path) => location.pathname === path
-    ? 'text-blue-600 font-semibold'
-    : 'text-gray-600 hover:text-blue-600';
+  const isActive = (path) => location.pathname === path;
 
   return (
     <>
-      <nav className="bg-white shadow-sm px-4 md:px-8 py-3 md:py-4">
-        <div className="flex justify-between items-center">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-              <span className="text-white text-xs font-bold">FT</span>
+      <nav style={{background: 'linear-gradient(135deg, #1e3a5f 0%, #2563eb 60%, #1d4ed8 100%)'}} className="px-4 md:px-8 py-0 sticky top-0 z-40 shadow-lg">
+        <div className="flex justify-between items-center h-16 md:h-18">
+
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 bg-white bg-opacity-20 backdrop-blur rounded-xl flex items-center justify-center border border-white border-opacity-30 shadow">
+              <span style={{fontFamily: 'Georgia, serif'}} className="text-white text-sm font-bold">FT</span>
             </div>
-            <span className="font-bold text-gray-800 text-sm md:text-base">Finance Tracker</span>
+            <span style={{fontFamily: 'Georgia, serif', letterSpacing: '0.5px'}} className="font-bold text-white text-base md:text-lg tracking-wide">Finance Tracker</span>
           </div>
 
-          <div className="hidden md:flex gap-4 lg:gap-6">
-            <Link to="/" className={isActive('/')}>Dashboard</Link>
-            <Link to="/transactions" className={isActive('/transactions')}>Transactions</Link>
-            <Link to="/budgets" className={isActive('/budgets')}>Budgets</Link>
+          <div className="hidden md:flex items-center gap-1 lg:gap-2 bg-white bg-opacity-10 rounded-2xl px-2 py-1.5 backdrop-blur">
+            {[['/', 'Dashboard'], ['/transactions', 'Transactions'], ['/budgets', 'Budgets'], ['/profile', 'Profile']].map(([path, label]) => (
+              <Link key={path} to={path} style={{fontFamily: 'system-ui, sans-serif'}}
+                className={"px-4 py-1.5 rounded-xl text-sm font-medium transition-all duration-200 " +
+                  (isActive(path)
+                    ? 'bg-white text-blue-700 shadow-md'
+                    : 'text-white text-opacity-90 hover:bg-white hover:bg-opacity-20')}>
+                {label}
+              </Link>
+            ))}
           </div>
 
-          <div className="hidden md:flex items-center gap-3 lg:gap-4">
-            <span className="text-sm text-gray-600">Hi, <span className="font-medium text-blue-600">{fullName}</span></span>
-            <button onClick={() => setShowConfirm(true)} className="text-sm text-red-500 hover:text-red-700 font-medium">Logout</button>
+          <div className="hidden md:flex items-center gap-3">
+            <Link to="/profile" className="flex items-center gap-2.5 bg-white bg-opacity-10 hover:bg-opacity-20 transition rounded-2xl px-3 py-1.5 border border-white border-opacity-20 backdrop-blur group">
+              <div className="w-7 h-7 bg-white rounded-full flex items-center justify-center shadow">
+                <span className="text-blue-700 text-xs font-bold">{initials}</span>
+              </div>
+              <span style={{fontFamily: 'system-ui, sans-serif'}} className="text-sm text-white font-medium">{fullName}</span>
+            </Link>
+            <button onClick={() => setShowConfirm(true)}
+              className="flex items-center gap-1.5 text-sm text-white text-opacity-80 hover:text-opacity-100 hover:bg-white hover:bg-opacity-10 font-medium transition px-3 py-1.5 rounded-xl border border-white border-opacity-0 hover:border-opacity-20">
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+              </svg>
+              Logout
+            </button>
           </div>
 
-          <button onClick={() => setMenuOpen(!menuOpen)} className="md:hidden p-2 rounded-lg hover:bg-gray-100">
-            <div className={"w-5 h-0.5 bg-gray-600 transition-all " + (menuOpen ? 'rotate-45 translate-y-1.5' : '')}></div>
-            <div className={"w-5 h-0.5 bg-gray-600 my-1 " + (menuOpen ? 'opacity-0' : '')}></div>
-            <div className={"w-5 h-0.5 bg-gray-600 transition-all " + (menuOpen ? '-rotate-45 -translate-y-1.5' : '')}></div>
+          <button onClick={() => setMenuOpen(!menuOpen)} className="md:hidden p-2 rounded-xl hover:bg-white hover:bg-opacity-10 transition">
+            <div className={"w-5 h-0.5 bg-white transition-all duration-300 " + (menuOpen ? 'rotate-45 translate-y-1.5' : '')}></div>
+            <div className={"w-5 h-0.5 bg-white my-1 transition-all duration-300 " + (menuOpen ? 'opacity-0' : '')}></div>
+            <div className={"w-5 h-0.5 bg-white transition-all duration-300 " + (menuOpen ? '-rotate-45 -translate-y-1.5' : '')}></div>
           </button>
         </div>
 
         {menuOpen && (
-          <div className="md:hidden mt-3 pb-2 border-t border-gray-100 pt-3 space-y-2">
-            <p className="text-sm text-gray-500 pb-1">Hi, <span className="font-medium text-blue-600">{fullName}</span></p>
-            <Link to="/" onClick={() => setMenuOpen(false)} className={"block py-2 text-sm " + isActive('/')}>Dashboard</Link>
-            <Link to="/transactions" onClick={() => setMenuOpen(false)} className={"block py-2 text-sm " + isActive('/transactions')}>Transactions</Link>
-            <Link to="/budgets" onClick={() => setMenuOpen(false)} className={"block py-2 text-sm " + isActive('/budgets')}>Budgets</Link>
-            <button onClick={() => { setMenuOpen(false); setShowConfirm(true); }} className="text-sm text-red-500 font-medium py-2 block">Logout</button>
+          <div className="md:hidden pb-4 border-t border-white border-opacity-20 pt-3 space-y-1">
+            <div className="flex items-center gap-3 px-2 py-3 mb-1">
+              <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow">
+                <span className="text-blue-700 text-sm font-bold">{initials}</span>
+              </div>
+              <div>
+                <p style={{fontFamily: 'system-ui, sans-serif'}} className="text-sm font-semibold text-white">{fullName}</p>
+                <p className="text-xs text-white text-opacity-60">View profile</p>
+              </div>
+            </div>
+            {[['/', 'Dashboard'], ['/transactions', 'Transactions'], ['/budgets', 'Budgets'], ['/profile', 'Profile']].map(([path, label]) => (
+              <Link key={path} to={path} onClick={() => setMenuOpen(false)}
+                className={"flex items-center px-3 py-2.5 rounded-xl text-sm font-medium transition " +
+                  (isActive(path) ? 'bg-white text-blue-700' : 'text-white text-opacity-90 hover:bg-white hover:bg-opacity-10')}>
+                {label}
+              </Link>
+            ))}
+            <div className="pt-2 mt-1 border-t border-white border-opacity-20">
+              <button onClick={() => { setMenuOpen(false); setShowConfirm(true); }}
+                className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-medium text-red-300 hover:bg-white hover:bg-opacity-10 transition w-full">
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                </svg>
+                Logout
+              </button>
+            </div>
           </div>
         )}
       </nav>
 
       {showConfirm && (
-        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 px-4">
-          <div className="bg-white rounded-2xl shadow-xl p-6 md:p-8 w-full max-w-sm text-center">
-            <div className="w-12 h-12 md:w-14 md:h-14 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <span className="text-red-500 text-xl md:text-2xl">👋</span>
+        <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50 px-4">
+          <div className="bg-white rounded-3xl shadow-2xl p-6 md:p-8 w-full max-w-sm text-center">
+            <div className="w-14 h-14 bg-red-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-7 h-7 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+              </svg>
             </div>
-            <h2 className="text-lg md:text-xl font-bold text-gray-800 mb-2">Logging out</h2>
+            <h2 style={{fontFamily: 'Georgia, serif'}} className="text-xl font-bold text-gray-800 mb-2">Logging out</h2>
             <p className="text-gray-500 text-sm mb-6">Are you sure you want to log out of your account?</p>
             <div className="flex gap-3">
-              <button onClick={() => setShowConfirm(false)} className="flex-1 border border-gray-300 text-gray-700 py-2 rounded-lg font-medium hover:bg-gray-50 transition text-sm">Cancel</button>
-              <button onClick={logout} className="flex-1 bg-red-500 text-white py-2 rounded-lg font-medium hover:bg-red-600 transition text-sm">Yes, Logout</button>
+              <button onClick={() => setShowConfirm(false)} className="flex-1 border border-gray-200 text-gray-700 py-2.5 rounded-xl font-medium hover:bg-gray-50 transition text-sm">Cancel</button>
+              <button onClick={logout} className="flex-1 bg-red-500 text-white py-2.5 rounded-xl font-medium hover:bg-red-600 transition text-sm">Yes, Logout</button>
             </div>
           </div>
         </div>
       )}
     </>
+  );
+}`;
+
+const profile = `import { useEffect, useState } from 'react';
+import api from '../services/api';
+
+export default function Profile() {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [editForm, setEditForm] = useState({ fullName: '', phone: '' });
+  const [passForm, setPassForm] = useState({ currentPassword: '', newPassword: '', confirm: '' });
+  const [editSuccess, setEditSuccess] = useState('');
+  const [editError, setEditError] = useState('');
+  const [passSuccess, setPassSuccess] = useState('');
+  const [passError, setPassError] = useState('');
+
+  useEffect(() => {
+    api.get('/profile')
+      .then(res => {
+        setUser(res.data);
+        setEditForm({ fullName: res.data.fullName, phone: res.data.phone });
+      })
+      .catch(err => console.error(err))
+      .finally(() => setLoading(false));
+  }, []);
+
+  const handleUpdate = async (e) => {
+    e.preventDefault();
+    setEditError('');
+    setEditSuccess('');
+    try {
+      const res = await api.put('/profile', editForm);
+      setUser(res.data);
+      localStorage.setItem('fullName', res.data.fullName);
+      setEditSuccess('Profile updated successfully!');
+    } catch (err) {
+      setEditError(err.response?.data?.error || 'Failed to update profile');
+    }
+  };
+
+  const handlePassword = async (e) => {
+    e.preventDefault();
+    setPassError('');
+    setPassSuccess('');
+    if (passForm.newPassword !== passForm.confirm) {
+      return setPassError('New passwords do not match');
+    }
+    try {
+      await api.put('/profile/password', {
+        currentPassword: passForm.currentPassword,
+        newPassword: passForm.newPassword,
+      });
+      setPassSuccess('Password changed successfully!');
+      setPassForm({ currentPassword: '', newPassword: '', confirm: '' });
+    } catch (err) {
+      setPassError(err.response?.data?.error || 'Failed to change password');
+    }
+  };
+
+  if (loading) return <div className="p-8 text-gray-500">Loading...</div>;
+
+  return (
+    <div className="p-4 md:p-6 lg:p-8 max-w-2xl mx-auto">
+      <div className="bg-blue-600 rounded-2xl p-4 md:p-6 mb-6 flex items-center gap-4">
+        <div className="w-14 h-14 md:w-16 md:h-16 bg-white rounded-full flex items-center justify-center">
+          <span className="text-blue-600 text-xl md:text-2xl font-bold">
+            {user?.fullName?.charAt(0).toUpperCase()}
+          </span>
+        </div>
+        <div>
+          <h1 className="text-lg md:text-2xl font-bold text-white">{user?.fullName}</h1>
+          <p className="text-blue-100 text-sm">{user?.email}</p>
+          <p className="text-blue-200 text-xs mt-1">Member since {new Date(user?.createdAt).toLocaleDateString()}</p>
+        </div>
+      </div>
+
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 md:p-6 mb-6">
+        <h2 className="text-base md:text-lg font-semibold text-gray-700 mb-4">Personal Information</h2>
+        {editSuccess && <div className="bg-green-50 border border-green-200 text-green-600 p-3 rounded-lg mb-4 text-sm">{editSuccess}</div>}
+        {editError && <div className="bg-red-50 border border-red-200 text-red-600 p-3 rounded-lg mb-4 text-sm">{editError}</div>}
+        <form onSubmit={handleUpdate} className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+            <input type="text" value={editForm.fullName}
+              onChange={e => setEditForm({...editForm, fullName: e.target.value})}
+              className="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500" required />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+            <input type="tel" value={editForm.phone}
+              onChange={e => setEditForm({...editForm, phone: e.target.value})}
+              className="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500" required />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+            <input type="email" value={user?.email} disabled
+              className="w-full border border-gray-200 rounded-lg px-4 py-2.5 bg-gray-50 text-gray-400 cursor-not-allowed" />
+            <p className="text-xs text-gray-400 mt-1">Email cannot be changed</p>
+          </div>
+          <button type="submit" className="w-full bg-blue-600 text-white py-2.5 rounded-lg font-medium hover:bg-blue-700 transition">
+            Save Changes
+          </button>
+        </form>
+      </div>
+
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 md:p-6">
+        <h2 className="text-base md:text-lg font-semibold text-gray-700 mb-4">Change Password</h2>
+        {passSuccess && <div className="bg-green-50 border border-green-200 text-green-600 p-3 rounded-lg mb-4 text-sm">{passSuccess}</div>}
+        {passError && <div className="bg-red-50 border border-red-200 text-red-600 p-3 rounded-lg mb-4 text-sm">{passError}</div>}
+        <form onSubmit={handlePassword} className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Current Password</label>
+            <input type="password" value={passForm.currentPassword}
+              onChange={e => setPassForm({...passForm, currentPassword: e.target.value})}
+              className="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Enter current password" required />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">New Password</label>
+            <input type="password" value={passForm.newPassword}
+              onChange={e => setPassForm({...passForm, newPassword: e.target.value})}
+              className="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="At least 6 characters" required />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Confirm New Password</label>
+            <input type="password" value={passForm.confirm}
+              onChange={e => setPassForm({...passForm, confirm: e.target.value})}
+              className="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Repeat new password" required />
+          </div>
+          <button type="submit" className="w-full bg-gray-800 text-white py-2.5 rounded-lg font-medium hover:bg-gray-900 transition">
+            Change Password
+          </button>
+        </form>
+      </div>
+    </div>
   );
 }`;
 
@@ -690,5 +866,6 @@ fs.writeFileSync('./src/pages/Dashboard.jsx', dashboard);
 fs.writeFileSync('./src/pages/Transactions.jsx', transactions);
 fs.writeFileSync('./src/pages/Budgets.jsx', budgets);
 fs.writeFileSync('./src/components/Navbar.jsx', navbar);
+fs.writeFileSync('./src/pages/Profile.jsx', profile);
 
 console.log('All pages written successfully!');

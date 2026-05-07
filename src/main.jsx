@@ -5,6 +5,12 @@ import './index.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <App />
+    <>
+  <div className="bg-slide"></div>
+  <div className="bg-slide"></div>
+  <div className="bg-slide"></div>
+  <div className="bg-slide"></div>
+  <App />
+</>
   </React.StrictMode>,
 )
