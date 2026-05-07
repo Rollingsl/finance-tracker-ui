@@ -33,23 +33,23 @@ export default function Register() {
   const update = (field) => (e) => setForm({ ...form, [field]: e.target.value });
 
   return (
-    <div className="min-h-screen flex">
-      <div className="hidden md:flex w-1/2 bg-blue-600 flex-col items-center justify-center p-12">
-        <img src={sendMoneyImg} alt="Send Money" className="w-80 mb-8" />
-        <h2 className="text-white text-3xl font-bold text-center">Start your journey</h2>
-        <p className="text-blue-100 text-center mt-3 text-lg">Join thousands managing their finances smarter every day.</p>
+    <div className="min-h-screen flex flex-col md:flex-row">
+      <div className="hidden md:flex md:w-1/2 lg:w-3/5 bg-blue-600 flex-col items-center justify-center p-8 lg:p-12">
+        <img src={sendMoneyImg} alt="Send Money" className="w-48 md:w-64 lg:w-80 mb-6 lg:mb-8" />
+        <h2 className="text-white text-2xl lg:text-3xl font-bold text-center">Start your journey</h2>
+        <p className="text-blue-100 text-center mt-3 text-base lg:text-lg">Join thousands managing their finances smarter every day.</p>
       </div>
-      <div className="w-full md:w-1/2 flex items-center justify-center p-8 bg-gray-50">
-        <div className="bg-white rounded-2xl shadow-md w-full max-w-md p-8">
-          <div className="mb-6">
-            <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center mb-4">
-              <span className="text-white text-lg font-bold">FT</span>
+      <div className="w-full md:w-1/2 lg:w-2/5 flex items-center justify-center p-4 md:p-8 bg-gray-50 min-h-screen md:min-h-0">
+        <div className="bg-white rounded-2xl shadow-md w-full max-w-md p-6 md:p-8">
+          <div className="mb-5 md:mb-6">
+            <div className="w-10 h-10 md:w-12 md:h-12 bg-blue-600 rounded-xl flex items-center justify-center mb-4">
+              <span className="text-white text-base md:text-lg font-bold">FT</span>
             </div>
-            <h1 className="text-2xl font-bold text-gray-800">Create your account</h1>
+            <h1 className="text-xl md:text-2xl font-bold text-gray-800">Create your account</h1>
             <p className="text-gray-500 text-sm mt-1">Start tracking your finances today</p>
           </div>
           {error && <div className="bg-red-50 border border-red-200 text-red-600 p-3 rounded-lg mb-4 text-sm">{error}</div>}
-          <form onSubmit={handleRegister} className="space-y-4">
+          <form onSubmit={handleRegister} className="space-y-3 md:space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
               <input type="text" value={form.fullName} onChange={update('fullName')}

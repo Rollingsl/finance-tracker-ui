@@ -30,19 +30,19 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex">
-      <div className="hidden md:flex w-1/2 bg-blue-600 flex-col items-center justify-center p-12">
-        <img src={moneyImg} alt="Finance" className="w-80 mb-8" />
-        <h2 className="text-white text-3xl font-bold text-center">Track your finances</h2>
-        <p className="text-blue-100 text-center mt-3 text-lg">Stay on top of your income, expenses and budgets in one place.</p>
+    <div className="min-h-screen flex flex-col md:flex-row">
+      <div className="hidden md:flex md:w-1/2 lg:w-3/5 bg-blue-600 flex-col items-center justify-center p-8 lg:p-12">
+        <img src={moneyImg} alt="Finance" className="w-48 md:w-64 lg:w-80 mb-6 lg:mb-8" />
+        <h2 className="text-white text-2xl lg:text-3xl font-bold text-center">Track your finances</h2>
+        <p className="text-blue-100 text-center mt-3 text-base lg:text-lg">Stay on top of your income, expenses and budgets in one place.</p>
       </div>
-      <div className="w-full md:w-1/2 flex items-center justify-center p-8 bg-gray-50">
-        <div className="bg-white rounded-2xl shadow-md w-full max-w-md p-8">
-          <div className="mb-8">
-            <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center mb-4">
-              <span className="text-white text-lg font-bold">FT</span>
+      <div className="w-full md:w-1/2 lg:w-2/5 flex items-center justify-center p-4 md:p-8 bg-gray-50 min-h-screen md:min-h-0">
+        <div className="bg-white rounded-2xl shadow-md w-full max-w-md p-6 md:p-8">
+          <div className="mb-6 md:mb-8">
+            <div className="w-10 h-10 md:w-12 md:h-12 bg-blue-600 rounded-xl flex items-center justify-center mb-4">
+              <span className="text-white text-base md:text-lg font-bold">FT</span>
             </div>
-            <h1 className="text-2xl font-bold text-gray-800">Welcome back</h1>
+            <h1 className="text-xl md:text-2xl font-bold text-gray-800">Welcome back</h1>
             <p className="text-gray-500 text-sm mt-1">Login to your finance tracker</p>
           </div>
           {error && <div className="bg-red-50 border border-red-200 text-red-600 p-3 rounded-lg mb-5 text-sm">{error}</div>}
@@ -108,23 +108,23 @@ export default function Register() {
   const update = (field) => (e) => setForm({ ...form, [field]: e.target.value });
 
   return (
-    <div className="min-h-screen flex">
-      <div className="hidden md:flex w-1/2 bg-blue-600 flex-col items-center justify-center p-12">
-        <img src={sendMoneyImg} alt="Send Money" className="w-80 mb-8" />
-        <h2 className="text-white text-3xl font-bold text-center">Start your journey</h2>
-        <p className="text-blue-100 text-center mt-3 text-lg">Join thousands managing their finances smarter every day.</p>
+    <div className="min-h-screen flex flex-col md:flex-row">
+      <div className="hidden md:flex md:w-1/2 lg:w-3/5 bg-blue-600 flex-col items-center justify-center p-8 lg:p-12">
+        <img src={sendMoneyImg} alt="Send Money" className="w-48 md:w-64 lg:w-80 mb-6 lg:mb-8" />
+        <h2 className="text-white text-2xl lg:text-3xl font-bold text-center">Start your journey</h2>
+        <p className="text-blue-100 text-center mt-3 text-base lg:text-lg">Join thousands managing their finances smarter every day.</p>
       </div>
-      <div className="w-full md:w-1/2 flex items-center justify-center p-8 bg-gray-50">
-        <div className="bg-white rounded-2xl shadow-md w-full max-w-md p-8">
-          <div className="mb-6">
-            <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center mb-4">
-              <span className="text-white text-lg font-bold">FT</span>
+      <div className="w-full md:w-1/2 lg:w-2/5 flex items-center justify-center p-4 md:p-8 bg-gray-50 min-h-screen md:min-h-0">
+        <div className="bg-white rounded-2xl shadow-md w-full max-w-md p-6 md:p-8">
+          <div className="mb-5 md:mb-6">
+            <div className="w-10 h-10 md:w-12 md:h-12 bg-blue-600 rounded-xl flex items-center justify-center mb-4">
+              <span className="text-white text-base md:text-lg font-bold">FT</span>
             </div>
-            <h1 className="text-2xl font-bold text-gray-800">Create your account</h1>
+            <h1 className="text-xl md:text-2xl font-bold text-gray-800">Create your account</h1>
             <p className="text-gray-500 text-sm mt-1">Start tracking your finances today</p>
           </div>
           {error && <div className="bg-red-50 border border-red-200 text-red-600 p-3 rounded-lg mb-4 text-sm">{error}</div>}
-          <form onSubmit={handleRegister} className="space-y-4">
+          <form onSubmit={handleRegister} className="space-y-3 md:space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
               <input type="text" value={form.fullName} onChange={update('fullName')}
@@ -194,7 +194,7 @@ export default function Dashboard() {
       .finally(() => setLoading(false));
   }, []);
 
-  if (loading) return <div className="p-8 text-gray-500">Loading...</div>;
+  if (loading) return <div className="p-4 md:p-8 text-gray-500">Loading...</div>;
 
   const expensesByCategory = transactions
     .filter(t => t.type === 'expense')
@@ -224,37 +224,37 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="p-8 max-w-5xl mx-auto">
-      <div className="bg-blue-600 rounded-2xl p-6 mb-8 flex justify-between items-center">
+    <div className="p-4 md:p-6 lg:p-8 max-w-5xl mx-auto">
+      <div className="bg-blue-600 rounded-2xl p-4 md:p-6 mb-6 md:mb-8 flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-bold text-white">Good day, {fullName}! 👋</h1>
-          <p className="text-blue-100 mt-1">Here is your financial summary</p>
+          <h1 className="text-lg md:text-2xl font-bold text-white">Good day, {fullName}! 👋</h1>
+          <p className="text-blue-100 mt-1 text-sm md:text-base">Here is your financial summary</p>
         </div>
-        <img src={goalsImg} alt="Goals" className="w-32 hidden md:block" />
+        <img src={goalsImg} alt="Goals" className="w-16 md:w-24 lg:w-32 hidden sm:block" />
       </div>
 
-      <div className="grid grid-cols-3 gap-6 mb-8">
-        <div className="bg-green-50 border border-green-200 rounded-xl p-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6 md:mb-8">
+        <div className="bg-green-50 border border-green-200 rounded-xl p-4 md:p-6">
           <p className="text-sm text-green-600 font-medium">Total Income</p>
-          <p className="text-3xl font-bold text-green-700 mt-1">UGX {summary?.income?.toLocaleString()}</p>
+          <p className="text-2xl md:text-3xl font-bold text-green-700 mt-1">UGX {summary?.income?.toLocaleString()}</p>
         </div>
-        <div className="bg-red-50 border border-red-200 rounded-xl p-6">
+        <div className="bg-red-50 border border-red-200 rounded-xl p-4 md:p-6">
           <p className="text-sm text-red-600 font-medium">Total Expenses</p>
-          <p className="text-3xl font-bold text-red-700 mt-1">UGX {summary?.expenses?.toLocaleString()}</p>
+          <p className="text-2xl md:text-3xl font-bold text-red-700 mt-1">UGX {summary?.expenses?.toLocaleString()}</p>
         </div>
-        <div className="bg-blue-50 border border-blue-200 rounded-xl p-6">
+        <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 md:p-6 md:col-span-2 lg:col-span-1">
           <p className="text-sm text-blue-600 font-medium">Balance</p>
-          <p className="text-3xl font-bold text-blue-700 mt-1">UGX {summary?.balance?.toLocaleString()}</p>
+          <p className="text-2xl md:text-3xl font-bold text-blue-700 mt-1">UGX {summary?.balance?.toLocaleString()}</p>
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-6">
-        <div className="bg-white rounded-xl border border-gray-200 p-6">
-          <h2 className="text-lg font-semibold text-gray-700 mb-4">Expenses by Category</h2>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="bg-white rounded-xl border border-gray-200 p-4 md:p-6">
+          <h2 className="text-base md:text-lg font-semibold text-gray-700 mb-4">Expenses by Category</h2>
           {Object.keys(expensesByCategory).length > 0 ? <Doughnut data={doughnutData} /> : <p className="text-gray-400 text-sm text-center mt-8">No expenses yet</p>}
         </div>
-        <div className="bg-white rounded-xl border border-gray-200 p-6">
-          <h2 className="text-lg font-semibold text-gray-700 mb-4">Last 7 Days</h2>
+        <div className="bg-white rounded-xl border border-gray-200 p-4 md:p-6">
+          <h2 className="text-base md:text-lg font-semibold text-gray-700 mb-4">Last 7 Days</h2>
           <Bar data={barData} options={barOptions} />
         </div>
       </div>
@@ -321,19 +321,19 @@ export default function Transactions() {
   const totalExpenses = filtered.filter(t => t.type === 'expense').reduce((sum, t) => sum + t.amount, 0);
 
   return (
-    <div className="p-8 max-w-4xl mx-auto">
-      <div className="bg-blue-600 rounded-2xl p-6 mb-8 flex justify-between items-center">
+    <div className="p-4 md:p-6 lg:p-8 max-w-4xl mx-auto">
+      <div className="bg-blue-600 rounded-2xl p-4 md:p-6 mb-6 flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-bold text-white">Transactions</h1>
-          <p className="text-blue-100 mt-1">Manage your income and expenses</p>
+          <h1 className="text-lg md:text-2xl font-bold text-white">Transactions</h1>
+          <p className="text-blue-100 mt-1 text-sm md:text-base">Manage your income and expenses</p>
         </div>
-        <img src={invoicesImg} alt="Invoices" className="w-24 hidden md:block" />
+        <img src={invoicesImg} alt="Invoices" className="w-16 md:w-24 hidden sm:block" />
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
-        <h2 className="text-lg font-semibold text-gray-700 mb-4">Add Transaction</h2>
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 md:p-6 mb-6">
+        <h2 className="text-base md:text-lg font-semibold text-gray-700 mb-4">Add Transaction</h2>
         {error && <p className="bg-red-50 text-red-600 p-3 rounded-lg mb-4 text-sm">{error}</p>}
-        <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-4">
+        <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <input type="number" placeholder="Amount (UGX)" value={form.amount}
             onChange={e => setForm({...form, amount: e.target.value})}
             className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" required />
@@ -348,18 +348,18 @@ export default function Transactions() {
           <input type="text" placeholder="Note (optional)" value={form.note}
             onChange={e => setForm({...form, note: e.target.value})}
             className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-          <button type="submit" className="col-span-2 bg-blue-600 text-white py-2 rounded-lg font-medium hover:bg-blue-700 transition">
+          <button type="submit" className="col-span-1 md:col-span-2 bg-blue-600 text-white py-2 rounded-lg font-medium hover:bg-blue-700 transition">
             Add Transaction
           </button>
         </form>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
-        <h2 className="text-lg font-semibold text-gray-700 mb-4">Filter Transactions</h2>
-        <div className="flex flex-wrap gap-3 mb-4">
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 md:p-6 mb-6">
+        <h2 className="text-base md:text-lg font-semibold text-gray-700 mb-4">Filter Transactions</h2>
+        <div className="flex flex-wrap gap-2 md:gap-3 mb-4">
           {['all', 'income', 'expense'].map(type => (
             <button key={type} onClick={() => setTypeFilter(type)}
-              className={"px-4 py-2 rounded-lg font-medium capitalize transition " + (typeFilter === type ? type === 'income' ? 'bg-green-500 text-white' : type === 'expense' ? 'bg-red-500 text-white' : 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200')}>
+              className={"px-3 md:px-4 py-1.5 md:py-2 rounded-lg font-medium capitalize transition text-sm md:text-base " + (typeFilter === type ? type === 'income' ? 'bg-green-500 text-white' : type === 'expense' ? 'bg-red-500 text-white' : 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200')}>
               {type === 'all' ? 'All' : type.charAt(0).toUpperCase() + type.slice(1)}
             </button>
           ))}
@@ -378,14 +378,14 @@ export default function Transactions() {
         )}
       </div>
 
-      <div className="grid grid-cols-2 gap-4 mb-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
         <div className="bg-green-50 border border-green-200 rounded-xl p-4">
           <p className="text-sm text-green-600 font-medium">Filtered Income</p>
-          <p className="text-xl font-bold text-green-700">UGX {totalIncome.toLocaleString()}</p>
+          <p className="text-lg md:text-xl font-bold text-green-700">UGX {totalIncome.toLocaleString()}</p>
         </div>
         <div className="bg-red-50 border border-red-200 rounded-xl p-4">
           <p className="text-sm text-red-600 font-medium">Filtered Expenses</p>
-          <p className="text-xl font-bold text-red-700">UGX {totalExpenses.toLocaleString()}</p>
+          <p className="text-lg md:text-xl font-bold text-red-700">UGX {totalExpenses.toLocaleString()}</p>
         </div>
       </div>
 
@@ -395,16 +395,16 @@ export default function Transactions() {
             <p className="text-center text-gray-400 py-8">No transactions match your filter</p>
           ) : (
             filtered.map(t => (
-              <div key={t.id} className="bg-white rounded-xl border border-gray-200 p-4 flex justify-between items-center">
+              <div key={t.id} className="bg-white rounded-xl border border-gray-200 p-3 md:p-4 flex justify-between items-center">
                 <div>
-                  <p className="font-medium text-gray-800 capitalize">{t.category}</p>
-                  <p className="text-sm text-gray-500">{t.note} • {new Date(t.date).toLocaleDateString()}</p>
+                  <p className="font-medium text-gray-800 capitalize text-sm md:text-base">{t.category}</p>
+                  <p className="text-xs md:text-sm text-gray-500">{t.note} • {new Date(t.date).toLocaleDateString()}</p>
                 </div>
-                <div className="flex items-center gap-4">
-                  <span className={t.type === 'income' ? 'text-green-600 font-bold' : 'text-red-600 font-bold'}>
+                <div className="flex items-center gap-2 md:gap-4">
+                  <span className={"text-sm md:text-base font-bold " + (t.type === 'income' ? 'text-green-600' : 'text-red-600')}>
                     {t.type === 'income' ? '+' : '-'} UGX {t.amount.toLocaleString()}
                   </span>
-                  <button onClick={() => handleDelete(t.id)} className="text-sm text-red-400 hover:text-red-600">Delete</button>
+                  <button onClick={() => handleDelete(t.id)} className="text-xs md:text-sm text-red-400 hover:text-red-600">Delete</button>
                 </div>
               </div>
             ))
@@ -444,19 +444,19 @@ export default function Budgets() {
   };
 
   return (
-    <div className="p-8 max-w-4xl mx-auto">
-      <div className="bg-blue-600 rounded-2xl p-6 mb-8 flex justify-between items-center">
+    <div className="p-4 md:p-6 lg:p-8 max-w-4xl mx-auto">
+      <div className="bg-blue-600 rounded-2xl p-4 md:p-6 mb-6 md:mb-8 flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-bold text-white">Budgets</h1>
-          <p className="text-blue-100 mt-1">Set limits and track your spending</p>
+          <h1 className="text-lg md:text-2xl font-bold text-white">Budgets</h1>
+          <p className="text-blue-100 mt-1 text-sm md:text-base">Set limits and track your spending</p>
         </div>
-        <img src={digitalCurrencyImg} alt="Budget" className="w-24 hidden md:block" />
+        <img src={digitalCurrencyImg} alt="Budget" className="w-16 md:w-24 hidden sm:block" />
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-8">
-        <h2 className="text-lg font-semibold text-gray-700 mb-4">Set a Budget</h2>
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 md:p-6 mb-6 md:mb-8">
+        <h2 className="text-base md:text-lg font-semibold text-gray-700 mb-4">Set a Budget</h2>
         {error && <p className="bg-red-50 text-red-600 p-3 rounded-lg mb-4 text-sm">{error}</p>}
-        <form onSubmit={handleSubmit} className="grid grid-cols-3 gap-4">
+        <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <input type="text" placeholder="Category (e.g. rent)" value={form.category}
             onChange={e => setForm({...form, category: e.target.value})}
             className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" required />
@@ -466,27 +466,27 @@ export default function Budgets() {
           <input type="month" value={form.month}
             onChange={e => setForm({...form, month: e.target.value})}
             className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" required />
-          <button type="submit" className="col-span-3 bg-blue-600 text-white py-2 rounded-lg font-medium hover:bg-blue-700 transition">
+          <button type="submit" className="col-span-1 md:col-span-2 lg:col-span-3 bg-blue-600 text-white py-2 rounded-lg font-medium hover:bg-blue-700 transition">
             Add Budget
           </button>
         </form>
       </div>
 
-      <h2 className="text-lg font-semibold text-gray-700 mb-4">This month — {currentMonth}</h2>
+      <h2 className="text-base md:text-lg font-semibold text-gray-700 mb-4">This month — {currentMonth}</h2>
       <div className="space-y-3">
         {report.map((b, i) => (
           <div key={i} className="bg-white rounded-xl border border-gray-200 p-4">
-            <div className="flex justify-between mb-2">
+            <div className="flex justify-between mb-2 flex-wrap gap-2">
               <p className="font-medium text-gray-800 capitalize">{b.category}</p>
-              <p className={b.overBudget ? 'text-red-600 font-bold' : 'text-green-600 font-bold'}>
+              <p className={"text-sm md:text-base font-bold " + (b.overBudget ? 'text-red-600' : 'text-green-600')}>
                 UGX {b.spent.toLocaleString()} / UGX {b.limit.toLocaleString()}
               </p>
             </div>
             <div className="w-full bg-gray-100 rounded-full h-2">
-              <div className={b.overBudget ? 'bg-red-500 h-2 rounded-full' : 'bg-green-500 h-2 rounded-full'}
+              <div className={"h-2 rounded-full " + (b.overBudget ? 'bg-red-500' : 'bg-green-500')}
                 style={{width: Math.min((b.spent / b.limit) * 100, 100) + '%'}}></div>
             </div>
-            <p className="text-sm text-gray-500 mt-1">
+            <p className="text-xs md:text-sm text-gray-500 mt-1">
               {b.overBudget ? 'Over budget by UGX ' + (b.spent - b.limit).toLocaleString() : 'UGX ' + b.remaining.toLocaleString() + ' remaining'}
             </p>
           </div>
@@ -496,13 +496,15 @@ export default function Budgets() {
   );
 }`;
 
-const navbar = `import { Link, useNavigate } from 'react-router-dom';
+const navbar = `import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useState } from 'react';
 
 export default function Navbar() {
   const navigate = useNavigate();
+  const location = useLocation();
   const fullName = localStorage.getItem('fullName') || 'User';
   const [showConfirm, setShowConfirm] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const logout = () => {
     localStorage.removeItem('token');
@@ -511,40 +513,61 @@ export default function Navbar() {
     navigate('/login');
   };
 
+  const isActive = (path) => location.pathname === path
+    ? 'text-blue-600 font-semibold'
+    : 'text-gray-600 hover:text-blue-600';
+
   return (
     <>
-      <nav className="bg-white shadow-sm px-8 py-4 flex justify-between items-center">
-        <div className="flex gap-6">
-          <Link to="/" className="text-gray-700 font-medium hover:text-blue-600">Dashboard</Link>
-          <Link to="/transactions" className="text-gray-700 font-medium hover:text-blue-600">Transactions</Link>
-          <Link to="/budgets" className="text-gray-700 font-medium hover:text-blue-600">Budgets</Link>
-        </div>
-        <div className="flex items-center gap-4">
-          <span className="text-sm text-gray-600">Hi, <span className="font-medium text-blue-600">{fullName}</span></span>
-          <button onClick={() => setShowConfirm(true)}
-            className="text-sm text-red-500 hover:text-red-700 font-medium">
-            Logout
+      <nav className="bg-white shadow-sm px-4 md:px-8 py-3 md:py-4">
+        <div className="flex justify-between items-center">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+              <span className="text-white text-xs font-bold">FT</span>
+            </div>
+            <span className="font-bold text-gray-800 text-sm md:text-base">Finance Tracker</span>
+          </div>
+
+          <div className="hidden md:flex gap-4 lg:gap-6">
+            <Link to="/" className={isActive('/')}>Dashboard</Link>
+            <Link to="/transactions" className={isActive('/transactions')}>Transactions</Link>
+            <Link to="/budgets" className={isActive('/budgets')}>Budgets</Link>
+          </div>
+
+          <div className="hidden md:flex items-center gap-3 lg:gap-4">
+            <span className="text-sm text-gray-600">Hi, <span className="font-medium text-blue-600">{fullName}</span></span>
+            <button onClick={() => setShowConfirm(true)} className="text-sm text-red-500 hover:text-red-700 font-medium">Logout</button>
+          </div>
+
+          <button onClick={() => setMenuOpen(!menuOpen)} className="md:hidden p-2 rounded-lg hover:bg-gray-100">
+            <div className={"w-5 h-0.5 bg-gray-600 transition-all " + (menuOpen ? 'rotate-45 translate-y-1.5' : '')}></div>
+            <div className={"w-5 h-0.5 bg-gray-600 my-1 " + (menuOpen ? 'opacity-0' : '')}></div>
+            <div className={"w-5 h-0.5 bg-gray-600 transition-all " + (menuOpen ? '-rotate-45 -translate-y-1.5' : '')}></div>
           </button>
         </div>
+
+        {menuOpen && (
+          <div className="md:hidden mt-3 pb-2 border-t border-gray-100 pt-3 space-y-2">
+            <p className="text-sm text-gray-500 pb-1">Hi, <span className="font-medium text-blue-600">{fullName}</span></p>
+            <Link to="/" onClick={() => setMenuOpen(false)} className={"block py-2 text-sm " + isActive('/')}>Dashboard</Link>
+            <Link to="/transactions" onClick={() => setMenuOpen(false)} className={"block py-2 text-sm " + isActive('/transactions')}>Transactions</Link>
+            <Link to="/budgets" onClick={() => setMenuOpen(false)} className={"block py-2 text-sm " + isActive('/budgets')}>Budgets</Link>
+            <button onClick={() => { setMenuOpen(false); setShowConfirm(true); }} className="text-sm text-red-500 font-medium py-2 block">Logout</button>
+          </div>
+        )}
       </nav>
 
       {showConfirm && (
-        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-          <div className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-sm text-center">
-            <div className="w-14 h-14 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <span className="text-red-500 text-2xl">👋</span>
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 px-4">
+          <div className="bg-white rounded-2xl shadow-xl p-6 md:p-8 w-full max-w-sm text-center">
+            <div className="w-12 h-12 md:w-14 md:h-14 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <span className="text-red-500 text-xl md:text-2xl">👋</span>
             </div>
-            <h2 className="text-xl font-bold text-gray-800 mb-2">Logging out</h2>
+            <h2 className="text-lg md:text-xl font-bold text-gray-800 mb-2">Logging out</h2>
             <p className="text-gray-500 text-sm mb-6">Are you sure you want to log out of your account?</p>
             <div className="flex gap-3">
-              <button onClick={() => setShowConfirm(false)}
-                className="flex-1 border border-gray-300 text-gray-700 py-2 rounded-lg font-medium hover:bg-gray-50 transition">
-                Cancel
-              </button>
-              <button onClick={logout}
-                className="flex-1 bg-red-500 text-white py-2 rounded-lg font-medium hover:bg-red-600 transition">
-                Yes, Logout
-              </button>
+              <button onClick={() => setShowConfirm(false)} className="flex-1 border border-gray-300 text-gray-700 py-2 rounded-lg font-medium hover:bg-gray-50 transition text-sm">Cancel</button>
+              <button onClick={logout} className="flex-1 bg-red-500 text-white py-2 rounded-lg font-medium hover:bg-red-600 transition text-sm">Yes, Logout</button>
             </div>
           </div>
         </div>

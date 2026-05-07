@@ -23,7 +23,7 @@ export default function Dashboard() {
       .finally(() => setLoading(false));
   }, []);
 
-  if (loading) return <div className="p-8 text-gray-500">Loading...</div>;
+  if (loading) return <div className="p-4 md:p-8 text-gray-500">Loading...</div>;
 
   const expensesByCategory = transactions
     .filter(t => t.type === 'expense')
@@ -53,37 +53,37 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="p-8 max-w-5xl mx-auto">
-      <div className="bg-blue-600 rounded-2xl p-6 mb-8 flex justify-between items-center">
+    <div className="p-4 md:p-6 lg:p-8 max-w-5xl mx-auto">
+      <div className="bg-blue-600 rounded-2xl p-4 md:p-6 mb-6 md:mb-8 flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-bold text-white">Good day, {fullName}! 👋</h1>
-          <p className="text-blue-100 mt-1">Here is your financial summary</p>
+          <h1 className="text-lg md:text-2xl font-bold text-white">Good day, {fullName}! 👋</h1>
+          <p className="text-blue-100 mt-1 text-sm md:text-base">Here is your financial summary</p>
         </div>
-        <img src={goalsImg} alt="Goals" className="w-32 hidden md:block" />
+        <img src={goalsImg} alt="Goals" className="w-16 md:w-24 lg:w-32 hidden sm:block" />
       </div>
 
-      <div className="grid grid-cols-3 gap-6 mb-8">
-        <div className="bg-green-50 border border-green-200 rounded-xl p-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6 md:mb-8">
+        <div className="bg-green-50 border border-green-200 rounded-xl p-4 md:p-6">
           <p className="text-sm text-green-600 font-medium">Total Income</p>
-          <p className="text-3xl font-bold text-green-700 mt-1">UGX {summary?.income?.toLocaleString()}</p>
+          <p className="text-2xl md:text-3xl font-bold text-green-700 mt-1">UGX {summary?.income?.toLocaleString()}</p>
         </div>
-        <div className="bg-red-50 border border-red-200 rounded-xl p-6">
+        <div className="bg-red-50 border border-red-200 rounded-xl p-4 md:p-6">
           <p className="text-sm text-red-600 font-medium">Total Expenses</p>
-          <p className="text-3xl font-bold text-red-700 mt-1">UGX {summary?.expenses?.toLocaleString()}</p>
+          <p className="text-2xl md:text-3xl font-bold text-red-700 mt-1">UGX {summary?.expenses?.toLocaleString()}</p>
         </div>
-        <div className="bg-blue-50 border border-blue-200 rounded-xl p-6">
+        <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 md:p-6 md:col-span-2 lg:col-span-1">
           <p className="text-sm text-blue-600 font-medium">Balance</p>
-          <p className="text-3xl font-bold text-blue-700 mt-1">UGX {summary?.balance?.toLocaleString()}</p>
+          <p className="text-2xl md:text-3xl font-bold text-blue-700 mt-1">UGX {summary?.balance?.toLocaleString()}</p>
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-6">
-        <div className="bg-white rounded-xl border border-gray-200 p-6">
-          <h2 className="text-lg font-semibold text-gray-700 mb-4">Expenses by Category</h2>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="bg-white rounded-xl border border-gray-200 p-4 md:p-6">
+          <h2 className="text-base md:text-lg font-semibold text-gray-700 mb-4">Expenses by Category</h2>
           {Object.keys(expensesByCategory).length > 0 ? <Doughnut data={doughnutData} /> : <p className="text-gray-400 text-sm text-center mt-8">No expenses yet</p>}
         </div>
-        <div className="bg-white rounded-xl border border-gray-200 p-6">
-          <h2 className="text-lg font-semibold text-gray-700 mb-4">Last 7 Days</h2>
+        <div className="bg-white rounded-xl border border-gray-200 p-4 md:p-6">
+          <h2 className="text-base md:text-lg font-semibold text-gray-700 mb-4">Last 7 Days</h2>
           <Bar data={barData} options={barOptions} />
         </div>
       </div>

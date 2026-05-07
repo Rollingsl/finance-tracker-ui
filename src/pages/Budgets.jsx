@@ -27,19 +27,19 @@ export default function Budgets() {
   };
 
   return (
-    <div className="p-8 max-w-4xl mx-auto">
-      <div className="bg-blue-600 rounded-2xl p-6 mb-8 flex justify-between items-center">
+    <div className="p-4 md:p-6 lg:p-8 max-w-4xl mx-auto">
+      <div className="bg-blue-600 rounded-2xl p-4 md:p-6 mb-6 md:mb-8 flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-bold text-white">Budgets</h1>
-          <p className="text-blue-100 mt-1">Set limits and track your spending</p>
+          <h1 className="text-lg md:text-2xl font-bold text-white">Budgets</h1>
+          <p className="text-blue-100 mt-1 text-sm md:text-base">Set limits and track your spending</p>
         </div>
-        <img src={digitalCurrencyImg} alt="Budget" className="w-24 hidden md:block" />
+        <img src={digitalCurrencyImg} alt="Budget" className="w-16 md:w-24 hidden sm:block" />
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-8">
-        <h2 className="text-lg font-semibold text-gray-700 mb-4">Set a Budget</h2>
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 md:p-6 mb-6 md:mb-8">
+        <h2 className="text-base md:text-lg font-semibold text-gray-700 mb-4">Set a Budget</h2>
         {error && <p className="bg-red-50 text-red-600 p-3 rounded-lg mb-4 text-sm">{error}</p>}
-        <form onSubmit={handleSubmit} className="grid grid-cols-3 gap-4">
+        <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <input type="text" placeholder="Category (e.g. rent)" value={form.category}
             onChange={e => setForm({...form, category: e.target.value})}
             className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" required />
@@ -49,27 +49,27 @@ export default function Budgets() {
           <input type="month" value={form.month}
             onChange={e => setForm({...form, month: e.target.value})}
             className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" required />
-          <button type="submit" className="col-span-3 bg-blue-600 text-white py-2 rounded-lg font-medium hover:bg-blue-700 transition">
+          <button type="submit" className="col-span-1 md:col-span-2 lg:col-span-3 bg-blue-600 text-white py-2 rounded-lg font-medium hover:bg-blue-700 transition">
             Add Budget
           </button>
         </form>
       </div>
 
-      <h2 className="text-lg font-semibold text-gray-700 mb-4">This month — {currentMonth}</h2>
+      <h2 className="text-base md:text-lg font-semibold text-gray-700 mb-4">This month — {currentMonth}</h2>
       <div className="space-y-3">
         {report.map((b, i) => (
           <div key={i} className="bg-white rounded-xl border border-gray-200 p-4">
-            <div className="flex justify-between mb-2">
+            <div className="flex justify-between mb-2 flex-wrap gap-2">
               <p className="font-medium text-gray-800 capitalize">{b.category}</p>
-              <p className={b.overBudget ? 'text-red-600 font-bold' : 'text-green-600 font-bold'}>
+              <p className={"text-sm md:text-base font-bold " + (b.overBudget ? 'text-red-600' : 'text-green-600')}>
                 UGX {b.spent.toLocaleString()} / UGX {b.limit.toLocaleString()}
               </p>
             </div>
             <div className="w-full bg-gray-100 rounded-full h-2">
-              <div className={b.overBudget ? 'bg-red-500 h-2 rounded-full' : 'bg-green-500 h-2 rounded-full'}
+              <div className={"h-2 rounded-full " + (b.overBudget ? 'bg-red-500' : 'bg-green-500')}
                 style={{width: Math.min((b.spent / b.limit) * 100, 100) + '%'}}></div>
             </div>
-            <p className="text-sm text-gray-500 mt-1">
+            <p className="text-xs md:text-sm text-gray-500 mt-1">
               {b.overBudget ? 'Over budget by UGX ' + (b.spent - b.limit).toLocaleString() : 'UGX ' + b.remaining.toLocaleString() + ' remaining'}
             </p>
           </div>

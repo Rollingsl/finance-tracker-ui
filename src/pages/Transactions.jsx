@@ -57,19 +57,19 @@ export default function Transactions() {
   const totalExpenses = filtered.filter(t => t.type === 'expense').reduce((sum, t) => sum + t.amount, 0);
 
   return (
-    <div className="p-8 max-w-4xl mx-auto">
-      <div className="bg-blue-600 rounded-2xl p-6 mb-8 flex justify-between items-center">
+    <div className="p-4 md:p-6 lg:p-8 max-w-4xl mx-auto">
+      <div className="bg-blue-600 rounded-2xl p-4 md:p-6 mb-6 flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-bold text-white">Transactions</h1>
-          <p className="text-blue-100 mt-1">Manage your income and expenses</p>
+          <h1 className="text-lg md:text-2xl font-bold text-white">Transactions</h1>
+          <p className="text-blue-100 mt-1 text-sm md:text-base">Manage your income and expenses</p>
         </div>
-        <img src={invoicesImg} alt="Invoices" className="w-24 hidden md:block" />
+        <img src={invoicesImg} alt="Invoices" className="w-16 md:w-24 hidden sm:block" />
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
-        <h2 className="text-lg font-semibold text-gray-700 mb-4">Add Transaction</h2>
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 md:p-6 mb-6">
+        <h2 className="text-base md:text-lg font-semibold text-gray-700 mb-4">Add Transaction</h2>
         {error && <p className="bg-red-50 text-red-600 p-3 rounded-lg mb-4 text-sm">{error}</p>}
-        <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-4">
+        <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <input type="number" placeholder="Amount (UGX)" value={form.amount}
             onChange={e => setForm({...form, amount: e.target.value})}
             className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" required />
@@ -84,18 +84,18 @@ export default function Transactions() {
           <input type="text" placeholder="Note (optional)" value={form.note}
             onChange={e => setForm({...form, note: e.target.value})}
             className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-          <button type="submit" className="col-span-2 bg-blue-600 text-white py-2 rounded-lg font-medium hover:bg-blue-700 transition">
+          <button type="submit" className="col-span-1 md:col-span-2 bg-blue-600 text-white py-2 rounded-lg font-medium hover:bg-blue-700 transition">
             Add Transaction
           </button>
         </form>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
-        <h2 className="text-lg font-semibold text-gray-700 mb-4">Filter Transactions</h2>
-        <div className="flex flex-wrap gap-3 mb-4">
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 md:p-6 mb-6">
+        <h2 className="text-base md:text-lg font-semibold text-gray-700 mb-4">Filter Transactions</h2>
+        <div className="flex flex-wrap gap-2 md:gap-3 mb-4">
           {['all', 'income', 'expense'].map(type => (
             <button key={type} onClick={() => setTypeFilter(type)}
-              className={"px-4 py-2 rounded-lg font-medium capitalize transition " + (typeFilter === type ? type === 'income' ? 'bg-green-500 text-white' : type === 'expense' ? 'bg-red-500 text-white' : 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200')}>
+              className={"px-3 md:px-4 py-1.5 md:py-2 rounded-lg font-medium capitalize transition text-sm md:text-base " + (typeFilter === type ? type === 'income' ? 'bg-green-500 text-white' : type === 'expense' ? 'bg-red-500 text-white' : 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200')}>
               {type === 'all' ? 'All' : type.charAt(0).toUpperCase() + type.slice(1)}
             </button>
           ))}
@@ -114,14 +114,14 @@ export default function Transactions() {
         )}
       </div>
 
-      <div className="grid grid-cols-2 gap-4 mb-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
         <div className="bg-green-50 border border-green-200 rounded-xl p-4">
           <p className="text-sm text-green-600 font-medium">Filtered Income</p>
-          <p className="text-xl font-bold text-green-700">UGX {totalIncome.toLocaleString()}</p>
+          <p className="text-lg md:text-xl font-bold text-green-700">UGX {totalIncome.toLocaleString()}</p>
         </div>
         <div className="bg-red-50 border border-red-200 rounded-xl p-4">
           <p className="text-sm text-red-600 font-medium">Filtered Expenses</p>
-          <p className="text-xl font-bold text-red-700">UGX {totalExpenses.toLocaleString()}</p>
+          <p className="text-lg md:text-xl font-bold text-red-700">UGX {totalExpenses.toLocaleString()}</p>
         </div>
       </div>
 
@@ -131,16 +131,16 @@ export default function Transactions() {
             <p className="text-center text-gray-400 py-8">No transactions match your filter</p>
           ) : (
             filtered.map(t => (
-              <div key={t.id} className="bg-white rounded-xl border border-gray-200 p-4 flex justify-between items-center">
+              <div key={t.id} className="bg-white rounded-xl border border-gray-200 p-3 md:p-4 flex justify-between items-center">
                 <div>
-                  <p className="font-medium text-gray-800 capitalize">{t.category}</p>
-                  <p className="text-sm text-gray-500">{t.note} • {new Date(t.date).toLocaleDateString()}</p>
+                  <p className="font-medium text-gray-800 capitalize text-sm md:text-base">{t.category}</p>
+                  <p className="text-xs md:text-sm text-gray-500">{t.note} • {new Date(t.date).toLocaleDateString()}</p>
                 </div>
-                <div className="flex items-center gap-4">
-                  <span className={t.type === 'income' ? 'text-green-600 font-bold' : 'text-red-600 font-bold'}>
+                <div className="flex items-center gap-2 md:gap-4">
+                  <span className={"text-sm md:text-base font-bold " + (t.type === 'income' ? 'text-green-600' : 'text-red-600')}>
                     {t.type === 'income' ? '+' : '-'} UGX {t.amount.toLocaleString()}
                   </span>
-                  <button onClick={() => handleDelete(t.id)} className="text-sm text-red-400 hover:text-red-600">Delete</button>
+                  <button onClick={() => handleDelete(t.id)} className="text-xs md:text-sm text-red-400 hover:text-red-600">Delete</button>
                 </div>
               </div>
             ))
